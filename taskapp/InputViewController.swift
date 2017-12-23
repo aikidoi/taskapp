@@ -16,7 +16,7 @@ class InputViewController: UIViewController {
     @IBOutlet weak var contentsTextView: UITextView!
     @IBOutlet weak var datePicker: UIDatePicker!
     @IBOutlet weak var categoryTextField: UITextField!
-
+    
     var task: Task!
     let realm = try! Realm()
     
@@ -39,9 +39,8 @@ class InputViewController: UIViewController {
         // Dispose of any resources that can be recreated.
         
     }
-    
-    // 追加する
-    override func viewWillDisappear(_ animated: Bool) {
+
+    @IBAction func taskRegist(_ sender: Any) {
         try! realm.write {
             self.task.title = self.titleTextField.text!
             self.task.category = self.categoryTextField.text!
@@ -49,9 +48,10 @@ class InputViewController: UIViewController {
             self.task.date = self.datePicker.date as NSDate
             self.realm.add(self.task, update: true)
         }
-        
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
         setNotification(task: task)
-        
         super.viewWillDisappear(animated)
     }
     // タスクのローカル通知を登録する

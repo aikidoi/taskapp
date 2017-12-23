@@ -10,12 +10,14 @@ import UIKit
 import RealmSwift
 import UserNotifications
 
-class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate {
 
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var categorySearch: UISearchBar!
     
     let realm = try! Realm()
     var taskArray = try! Realm().objects(Task.self).sorted(byKeyPath: "date", ascending: false)
+    var keyword:String = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,7 +25,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 
         tableView.delegate = self
         tableView.dataSource = self
-        
+        categorySearch.delegate = self
     }
 
     override func didReceiveMemoryWarning() {
@@ -44,7 +46,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 
         // Cellに値を設定する.
         let task = taskArray[indexPath.row]
-        cell.textLabel?.text = task.title
+        cell.textLabel?.text = task.title + "(" + task.category + ")"
         
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd HH:mm"
@@ -111,10 +113,26 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             inputViewController.task = task
         }
     }
+
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+    keyword = categorySearch.text!
+    self.view.endEditing(true)
+    print(keyword)
+        if keyword != "" {
+            taskArray = try! Realm().objects(Task.self).filter("category == %@", keyword).sorted(byKeyPath:"date", ascending: false)
+             } else {
+            taskArray = try! Realm().objects(Task.self).sorted(byKeyPath: "date", ascending: false)
+        }
+        tableView.reloadData()
+    }
+    
     // 入力画面から戻ってきた時に TableView を更新させる
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         tableView.reloadData()
+    }
+    
+    @IBAction func unwind(_ segue: UIStoryboardSegue) {
     }
 }
 
