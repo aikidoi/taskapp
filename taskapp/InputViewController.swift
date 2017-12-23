@@ -26,7 +26,7 @@ class InputViewController: UIViewController {
         // 背景をタップしたらdismissKeyboardメソッドを呼ぶように設定する
         let tapGesture: UITapGestureRecognizer = UITapGestureRecognizer(target:self, action:#selector(dismissKeyboard))
         self.view.addGestureRecognizer(tapGesture)
-
+        
         titleTextField.text = task.title
         categoryTextField.text = task.category
         contentsTextView.text = task.contents
@@ -39,7 +39,7 @@ class InputViewController: UIViewController {
         // Dispose of any resources that can be recreated.
         
     }
-
+    
     @IBAction func taskRegist(_ sender: Any) {
         try! realm.write {
             self.task.title = self.titleTextField.text!

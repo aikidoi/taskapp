@@ -11,7 +11,7 @@ import RealmSwift
 import UserNotifications
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate {
-
+    
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var categorySearch: UISearchBar!
     
@@ -22,17 +22,17 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-
+        
         tableView.delegate = self
         tableView.dataSource = self
         categorySearch.delegate = self
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
+    
     // MARK: UITableViewDataSourceプロトコルのメソッド
     // データの数（＝セルの数）を返すメソッド
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -43,7 +43,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // 再利用可能な cell を得る
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath as IndexPath)
-
+        
         // Cellに値を設定する.
         let task = taskArray[indexPath.row]
         cell.textLabel?.text = task.title + "(" + task.category + ")"
@@ -75,7 +75,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             
             // 削除されたタスクを取得する
             let task = self.taskArray[indexPath.row]
-
+            
             // ローカル通知をキャンセルする
             let center = UNUserNotificationCenter.current()
             center.removePendingNotificationRequests(withIdentifiers: [String(task.id)])
@@ -113,14 +113,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             inputViewController.task = task
         }
     }
-
+    
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-    keyword = categorySearch.text!
-    self.view.endEditing(true)
-    print(keyword)
+        keyword = categorySearch.text!
+        self.view.endEditing(true)
+        print(keyword)
         if keyword != "" {
             taskArray = try! Realm().objects(Task.self).filter("category == %@", keyword).sorted(byKeyPath:"date", ascending: false)
-             } else {
+        } else {
             taskArray = try! Realm().objects(Task.self).sorted(byKeyPath: "date", ascending: false)
         }
         tableView.reloadData()
